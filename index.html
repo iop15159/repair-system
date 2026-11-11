@@ -4,15 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#164e46">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="報修登記">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <title>報修登記｜設備與環境問題通報</title>
   <link rel="stylesheet" href="./style.css">
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="./config.js"></script>
   <script defer src="./app.js"></script>
+  <script defer src="./pwa.js"></script>
 </head>
 <body>
   <header class="site-header"><a href="./" class="brand"><span class="brand-icon" aria-hidden="true">＋</span> 報修登記</a><span class="header-note">設備・網路・環境</span></header>
   <main>
+    <div class="pwa-tools"><p id="connection-message" class="message" role="status" aria-live="polite"></p><button id="install-button" type="button" class="secondary" hidden>安裝報修登記</button></div>
     <section class="intro" aria-labelledby="page-title"><p class="eyebrow">REPAIR REQUEST</p><h1 id="page-title">發現問題，<br class="mobile-break">從這裡開始。</h1><p>記下需要協助的事項，讓每一個問題都有跡可循。</p></section>
     <section class="panel" aria-labelledby="form-title">
       <div class="section-heading"><div><p class="eyebrow">01 / 新增通報</p><h2 id="form-title">填寫報修資料</h2></div><span class="small-note">所有欄位皆為必填</span></div>

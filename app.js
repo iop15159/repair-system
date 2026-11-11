@@ -104,6 +104,10 @@
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (sending || !client) return;
+    if (!navigator.onLine) {
+      message(formMessage, '目前離線，尚未送出。請保持此頁開啟，恢復連線後再送出；內容不會自動保存或補送。', 'error');
+      return;
+    }
     const values = new FormData(form);
     // 白名單建立 payload，不傳 status、id 或 created_at。
     const payload = Object.fromEntries(['reporter_name', 'location', 'category', 'description', 'urgency']
