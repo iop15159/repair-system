@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#164e46">
+  <title>報修登記｜設備與環境問題通報</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./config.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <header class="site-header"><a href="./" class="brand"><span class="brand-icon" aria-hidden="true">＋</span> 報修登記</a><span class="header-note">設備・網路・環境</span></header>
+  <main>
+    <section class="intro" aria-labelledby="page-title"><p class="eyebrow">REPAIR REQUEST</p><h1 id="page-title">發現問題，<br class="mobile-break">從這裡開始。</h1><p>記下需要協助的事項，讓每一個問題都有跡可循。</p></section>
+    <section class="panel" aria-labelledby="form-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / 新增通報</p><h2 id="form-title">填寫報修資料</h2></div><span class="small-note">所有欄位皆為必填</span></div>
+      <p class="notice">此為公開示範清單，請使用虛構姓名與地點，勿填寫個資或機密資訊。</p>
+      <form id="repair-form">
+        <fieldset id="form-fields" disabled>
+          <div class="form-grid">
+            <label>報修人<input name="reporter_name" required maxlength="100" placeholder="例如：王小明（示範）" autocomplete="off"></label>
+            <label>地點或部門<input name="location" required maxlength="200" placeholder="例如：示範辦公室 2 樓" autocomplete="off"></label>
+            <label>類別<select name="category" required><option value="" disabled selected>請選擇問題類別</option><option>設備</option><option>網路</option><option>環境</option><option>其他</option></select></label>
+            <label>緊急程度<select name="urgency" required><option>低</option><option selected>中</option><option>高</option></select></label>
+            <label class="full-width">問題說明<textarea name="description" required maxlength="5000" rows="5" placeholder="請描述發生的情況、位置及需要協助的事項。"></textarea><span class="field-hint">最多 5,000 字元</span></label>
+          </div>
+          <div class="form-footer"><span class="small-note">送出後，處理狀態自動設為「待處理」。</span><button type="submit" id="submit-button">送出報修 <span aria-hidden="true">↗</span></button></div>
+        </fieldset>
+      </form>
+      <p id="form-message" class="message" role="status" aria-live="polite"></p>
+      <noscript><p class="message error">請開啟 JavaScript，才能送出報修及讀取清單。</p></noscript>
+    </section>
+    <section class="requests-section" aria-labelledby="list-title">
+      <div class="section-heading"><div><p class="eyebrow">02 / 報修紀錄</p><h2 id="list-title">最近的通報 <span class="count">最新 20 筆</span></h2></div><button type="button" id="refresh-button" class="secondary" disabled>重新整理</button></div>
+      <p id="list-message" class="message" role="status" aria-live="polite">正在載入清單…</p>
+      <div id="request-list" class="request-list" aria-busy="true"></div>
+    </section>
+  </main>
+  <footer>報修登記系統 <span>讓問題被看見，讓處理有紀錄。</span></footer>
+</body>
+</html>
