@@ -7,6 +7,11 @@
   const formMessage = document.querySelector('#form-message');
   const listMessage = document.querySelector('#list-message');
   const list = document.querySelector('#request-list');
+  const filterMessage = document.querySelector('#filter-message');
+  const filterButtons = document.querySelectorAll('[data-urgency]');
+  let cachedRequests = [];
+  let selectedUrgency = '全部';
+  let hasLoaded = false;
   let client;
   let sending = false;
   let loading = false;
@@ -51,6 +56,27 @@
     list.replaceChildren(fragment);
   }
 
+  // 篩選只使用最近一次成功讀取的清單，不發出新的資料庫請求。
+  function renderFilteredRequests() {
+    const visible = selectedUrgency === '全部' ? cachedRequests
+      : cachedRequests.filter(row => row.urgency === selectedUrgency);
+    renderRequests(visible);
+    filterButtons.forEach(button => {
+      button.setAttribute('aria-pressed', String(button.dataset.urgency === selectedUrgency));
+    });
+    message(filterMessage, !hasLoaded ? '' : selectedUrgency === '全部'
+      ? `顯示已載入的全部 ${visible.length} 筆。`
+      : visible.length ? `顯示緊急程度「${selectedUrgency}」的 ${visible.length} 筆。`
+        : `已載入的最近 ${cachedRequests.length} 筆中，沒有緊急程度「${selectedUrgency}」的報修。`);
+  }
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      selectedUrgency = button.dataset.urgency;
+      renderFilteredRequests();
+    });
+  });
+
   async function loadRequests() {
     if (loading) return;
     loading = true;
@@ -62,10 +88,12 @@
         .select('id,created_at,reporter_name,location,category,description,urgency,status')
         .order('created_at', { ascending: false }).order('id', { ascending: false }).limit(20);
       if (error) throw error;
-      renderRequests(data || []);
-      message(listMessage, data?.length ? `已顯示最近 ${data.length} 筆通報，新的在上面。` : '目前沒有報修紀錄，第一筆通報就從上方開始。');
+      cachedRequests = data || [];
+      hasLoaded = true;
+      renderFilteredRequests();
+      message(listMessage, data?.length ? `已載入最近 ${data.length} 筆通報，新的在上面。篩選範圍僅限這些紀錄。` : '目前沒有報修紀錄，第一筆通報就從上方開始。');
     } catch (error) {
-      message(listMessage, `清單載入失敗：${errorDetail(error)}${list.childElementCount ? ' 下方保留上次載入的紀錄。' : ''} 請按「重新整理」重試。`, 'error');
+      message(listMessage, `清單載入失敗：${errorDetail(error)}${hasLoaded ? ' 保留上次載入的紀錄，仍可切換篩選。' : ''} 請按「重新整理」重試。`, 'error');
     } finally {
       loading = false;
       refreshButton.disabled = false;
